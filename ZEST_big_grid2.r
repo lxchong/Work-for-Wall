@@ -211,6 +211,7 @@ Zest242 <- function(eye="right", primaryStartValue=30, gridType="24-2",
     # prevTh - matrix of thresholds from previous test
     #
     ###############################################################
+    
     if (retest == TRUE) {
       retestFile <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$dx,"_",details$gridType,
                          "_Grid_Size_",details$stimSizeRoman,"_vfPackage.csv")
@@ -805,7 +806,7 @@ details <- practiceQuery()
 while (details$practice == TRUE) {
   gRunning <- TRUE
   opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,gazeFeed=0,bigWheel=TRUE,resp_buzzer = 3)
-  Zest242(eye=details$eye, primaryStartValue=30, gridType="practice",outlierValue=5,outlierFreq=1)
+  Zest242(eye=details$eye, primaryStartValue=30, gridType="practice",outlierValue=15,outlierFreq=1)
   tkdestroy(tt)
   pracTestComplete()
   dev.off()
@@ -861,8 +862,10 @@ if (gRunning) {
     # load patches to visualFields, as new normative values, locations map, etc here
     ################################################################################
     load("nvsapmwcps.rda")
-    load( "vfsettingsmw.rda" )
-    source( "vflayoutmw_singleField.r" )
+    load("vfsettingsmw.rda")
+    load("saplocmap.RData")
+    load("vfidefault.rda")
+    source("vflayoutmw_singleField.r")
 
     #CARE!!! set appropriate normative values
     setnv( "nvsapmwcps" )

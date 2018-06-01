@@ -56,7 +56,7 @@ tt.practice <- testPattern(grid.practice.coords)
 details <- practiceQuery()
 
 while (details$practice == TRUE) {
-  Zest242(eye=details$eye, primaryStartValue=30, gridType="practice",outlierValue=8,outlierFreq=2,tt=tt.practice,retest=details$retest)
+  Zest242(eye=details$eye, primaryStartValue=30, gridType="practice",outlierValue=8,outlierFreq=2,tt=tt.practice)
   tkdestroy(tt)
   pracTestComplete()
   dev.off()
@@ -144,6 +144,8 @@ if (gRunning) {
   ################################################################################
   load("nvsapmwcps.rda")
   load( "vfsettingsmw.rda" )
+  load("saplocmap.RData")
+  load("vfidefault.rda")
   source( "vflayoutmw_singleField.r" )
   
   #CARE!!! set appropriate normative values
