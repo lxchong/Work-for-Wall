@@ -43,26 +43,17 @@ vflayoutmw_singleField <- function( vf, pwidth = 8.27,
   ######################################################
   # first plot all graphs
   ######################################################
-  if (any(vf$tpattern == c("peripheralv","peripheralvi","pPeriv"))) {
-    if (vf$seye == "OS") {
-      xmin     <- -90
-      xmax     <-  54
-    } else {
-      xmin <- -54
-      xmax <- 90
-    }
-    ymin     <- -54
-    ymax     <-  36
-  } else {
-    xmin <- -30
-    xmax <- 30
-    ymin <- -30
-    ymax <- 30
-  }
+  texteval <- paste( vf$tperimetry, "locmap$", vf$tpattern, sep = "" )
+  locmap   <- eval( parse( text = texteval ) )
+  xrange <- max( locmap$xod ) - min( locmap$xod )
+  yrange <- max( locmap$yod ) - min( locmap$yod )
+  xmin   <- min( locmap$xod ) - 0.025 * xrange
+  xmax   <- max( locmap$xod ) + 0.025 * xrange
+  ymin   <- min( locmap$yod ) - 0.025 * yrange
+  ymax   <- max( locmap$yod ) + 0.025 * yrange
 
   # total-deviation plot
   opar <- par( no.readonly = TRUE )
-  1.642857
   par( fig = c( 0.275, 1.00, 0.675, 0.975 ) )
   vfplotmw( vf, plotType = "td", txtfont = ffamilyvf, pointsize = pointsize,
           xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
@@ -89,8 +80,11 @@ vflayoutmw_singleField <- function( vf, pwidth = 8.27,
   # color-code map
   par( new = TRUE )
   par( fig = c( 0.1, 0.25, 0, 0.1 ) )
-  colormapgraph( ncol = 6, txtfont = ffamilyvf, pointsize = pointsize, outerSymbol = outerSymbol, innerSymbol = innerSymbol,
-                 outerInch = outerInch, innerInch = innerInch )
+  #colormapgraph( ncol = 6, txtfont = ffamilyvf, pointsize = pointsize, outerSymbol = outerSymbol, innerSymbol = innerSymbol,
+  #               outerInch = outerInch, innerInch = innerInch )
+  
+  colormapgraph( ncol = 6, txtfont = ffamilyvf, pointsize = pointsize, outerSymbol = outerSymbol,
+                 outerInch = outerInch)
 
   par( opar )
   ######################################################
@@ -191,11 +185,11 @@ vflayoutmw_singleField <- function( vf, pwidth = 8.27,
     textpattern <- "Polar Central 26, Size V"
   } else if( vf$tpattern == "pPC26vi" ) {
     textpattern <- "Polar Central 26, Size VI"
-  } else if( vf$tpattern == "pPeri" ) {
+  } else if( vf$tpattern == "pPeri_v2" ) {
     textpattern <- "Polar Peripheral, Size III"
-  } else if( vf$tpattern == "pPeriv" ) {
+  } else if(any(vf$tpattern == c("pPeriv","pPeriv_v2"))) {
     textpattern <- "Polar Peripheral, Size V"
-  } else if( vf$tpattern == "pPerivi" ) {
+  } else if( vf$tpattern == "pPerivi_v2" ) {
     textpattern <- "Polar Peripheral, Size VI"
   } else if( vf$tpattern == "pPT" ) {
     textpattern <- "Polar Total, Size III"
@@ -223,7 +217,7 @@ vflayoutmw_singleField <- function( vf, pwidth = 8.27,
   text <- paste( "norm vals: ", visualFields::vfenv$nv$nvname, sep = "" )
   text <- paste( text, substr( packageDescription( "visualFields" )$Date, 1, 4 ), sep = "\n" )
   text <- paste( text, "visualFields", packageDescription( "visualFields" )$Version, sep = " " )
-  grid.text( text, x = 1.00, y = 0.00, just = c( "right", "bottom" ), gp = gpar( fontfamily = ffamily, fontsize = sizetxtSmall ) )
+  grid.text( text, x = 1.00, y = -1.00, just = c( "right", "bottom" ), gp = gpar( fontfamily = ffamily, fontsize = sizetxtSmall ) )
 
   ######################################################
   # visual-field test results
@@ -270,7 +264,7 @@ vflayoutmw_singleField <- function( vf, pwidth = 8.27,
   # global indices
   vfs  <- vfstats( vf )
   vfsp <- vfstatspmap( vfs )
-  vfi  <- vfindex( vf )
+  vfi  <- vfindex( vf, vfiset = vfidefault)
   vfip <- vfindexpmap( vfi )
   # general-height difference, if the used normative values have one.
   texteval <- paste( "vfenv$nv$", vf$tpattern, "_", vf$talgorithm, "$nvtdrank$mtdr", sep = "" )

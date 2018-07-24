@@ -32,7 +32,8 @@ TT.G1 <- testPattern(grid.G1.coords)
 TT.G1[which(TT.G1 == 1)] <- 30
 
 TT.PTotal <- testPattern(grid.PTotal.coords)
-TT.PTotal[which(TT.PTotal == 1)] <- 30
+#TT.PTotal[which(TT.PTotal == 1)] <- 30
+TT.PTotal[which(is.na(TT.PTotal) == FALSE)] <- 30
 
 TT.PCentral10 <- testPattern(grid.PCentral10.coords)
 TT.PCentral10[which(TT.PCentral10 == 2)] <- 30
@@ -117,6 +118,7 @@ terminate <- Sys.time()
 tkdestroy(tt)
 graphics.off()
 
+
 if (gRunning) {
   windows(900,350)
   testStatusFinal(z)
@@ -134,7 +136,7 @@ if (gRunning) {
   writeFile3(details)
   px_database(details)
   
-  if (any(details$gridType == c("30-2","30-1","24-2","Peripheral","P-Peripheral","P-Central26"))) {  
+  if (any(details$gridType == c("30-2","30-1","24-2","Peripheral","P-Peripheral","P-Central26","P-Total"))) {  
   ###################################################################################################
   # Create printout of data using visualFields package
   ###################################################################################################
@@ -144,13 +146,12 @@ if (gRunning) {
   ################################################################################
   load("nvsapmwcps.rda")
   load( "vfsettingsmw.rda" )
-  load("saplocmap.RData")
-  load("vfidefault.rda")
   source( "vflayoutmw_singleField.r" )
+  source( "vflayoutmw_singleField2.r" )
   
   #CARE!!! set appropriate normative values
   setnv( "nvsapmwcps" )
-  
+
   #load data
   filename <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$dx,"_",details$gridType,"_Grid_Size_",details$stimSizeRoman,"_vfPackage.csv")
   loadfile <- read.csv(filename)
@@ -158,8 +159,11 @@ if (gRunning) {
   
   #generate unique file name for printout
   fname <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$gridType,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_visualFields.pdf")
+  fname2 <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$gridType,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_visualFields2.pdf")
+  
   #save printout
   vflayoutmw_singleField(vf[nrow(vf),], filename = fname)
+  vflayoutmw_singleField2(vf[nrow(vf),], filename = fname2)
   }
 } else {
   file.remove(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$grid,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_stimResponses.txt"))

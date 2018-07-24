@@ -53,7 +53,9 @@
 #         13 August 2016: Changed outliers calculation rule
 #         17 August 2016: Customized prior seeding for polar grids based on normative data collected.
 #         25 August 2016: Added P-Central26 and P-Peripheral visualFields printouts
-
+#           02 June 2018: Added new voronoi tessellation visualFields printout
+#           02 June 2018: removed 16 locations from pPeriv test pattern
+#           12 June 2018: added normative database for P-Total and added automatic generation of printout
 
 rm(list=ls())
 source("grids2.r")
@@ -361,14 +363,14 @@ Zest242 <- function(eye="right", primaryStartValue=30, gridType="24-2",
         }
         return(finalF(state.fovea)[1])   
       }
-      opiSetBackground(fixation=.Octopus900Env$FIX_CROSS,lum=.Octopus900Env$BG_10)
+      #opiSetBackground(fixation=.Octopus900Env$FIX_CROSS,lum=.Octopus900Env$BG_10)
       pauseAtStartFovea() 
       fovealTH <- resFovea()
       fovealTestComplete(fovealTH)
     }
     
     windows(700,250)
-    opiSetBackground(fixation=.Octopus900Env$FIX_CENTRE,lum=.Octopus900Env$BG_10)
+    #opiSetBackground(fixation=.Octopus900Env$FIX_CENTRE,lum=.Octopus900Env$BG_10)
     pauseAtStart()
     commence <<- Sys.time()
     res1 <- procedureWithGrowthPattern(details$startTime,growthPattern, growthNext, onePriors, startF, stepF, stopF, finalF,
@@ -690,9 +692,9 @@ writeFile3 <- function (details,filename = paste0(details$dx,"/",details$gridTyp
     if (details$stimSizeRoman == "VI") {pattern <- "pPC26vi"}
   } 
   if (details$gridType == "P-Peripheral") {
-    if (details$stimSizeRoman == "III") {pattern <- "pPeri"}
-    if (details$stimSizeRoman == "V") {pattern <- "pPeriv"}
-    if (details$stimSizeRoman == "VI") {pattern <- "pPerivi"}
+    if (details$stimSizeRoman == "III") {pattern <- "pPeri_v2"}
+    if (details$stimSizeRoman == "V") {pattern <- "pPeriv_v2"}
+    if (details$stimSizeRoman == "VI") {pattern <- "pPerivi_v2"}
   }
   if (details$gridType == "P-Edge") {
     if (details$stimSizeRoman == "III") {pattern <- "pEdge"}
@@ -791,99 +793,101 @@ px_database <- function (details) {
 ####################################
 # Example Usage
 ####################################
-require(OPI)
-chooseOpi("Octopus900")
-source("query_patient_details.r")
+#require(OPI)
+#chooseOpi("Octopus900")
+#source("query_patient_details.r")
 
     # extra opiInitialize to light up bowl before procedure starts
-opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye="right",gazeFeed=0,bigWheel=TRUE,resp_buzzer = 3)
-opiClose()
+#opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye="right",gazeFeed=0,bigWheel=TRUE,resp_buzzer = 3)
+#opiClose()
 
-gRunning <- TRUE
+#gRunning <- TRUE
 
-details <- practiceQuery()
+#details <- practiceQuery()
 
-while (details$practice == TRUE) {
-  gRunning <- TRUE
-  opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,gazeFeed=0,bigWheel=TRUE,resp_buzzer = 3)
-  Zest242(eye=details$eye, primaryStartValue=30, gridType="practice",outlierValue=15,outlierFreq=1)
-  tkdestroy(tt)
-  pracTestComplete()
-  dev.off()
-  details <- practiceQuery()
-  opiClose()
-}
+#while (details$practice == TRUE) {
+#  gRunning <- TRUE
+#  opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,gazeFeed=0,bigWheel=TRUE,resp_buzzer = 3)
+#  Zest242(eye=details$eye, primaryStartValue=30, gridType="practice",outlierValue=15,outlierFreq=1)
+#  tkdestroy(tt)
+#  pracTestComplete()
+#  dev.off()
+#  details <- practiceQuery()
+#  opiClose()
+#}
 
-gRunning <- TRUE # reset gRunning in case practice test was terminated early
-details <- inputs()
-if (dir.exists(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman)) == FALSE) {dir.create(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman),recursive = TRUE)}
-opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,gazeFeed=0,bigWheel=TRUE, resp_buzzer = 3)
-PSV <- setPSV(details$gridType,details$stimSizeRoman)
+#gRunning <- TRUE # reset gRunning in case practice test was terminated early
+#details <- inputs()
+#if (dir.exists(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman)) == FALSE) {dir.create(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman),recursive = TRUE)}
+#opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,gazeFeed=0,bigWheel=TRUE, resp_buzzer = 3)
+#PSV <- setPSV(details$gridType,details$stimSizeRoman)
 
-if (details$gridType == "P-Total") {
-  z1 <- Zest242(eye=details$eye, primaryStartValue=PSV, gridType="P-Central26",outlierValue=7,minInterStimInterval=0,moveProjector = TRUE,retest=details$retest)
-  tkdestroy(tt)
-  graphics.off()
-  details$fovea <- FALSE
-  z2 <- Zest242(eye=details$eye, primaryStartValue=PSV, gridType="P-Peripheral",outlierValue=7,minInterStimInterval=0,moveProjector = TRUE,retest=details$retest)
-  z <- combine(z1,z2)
-} else {
-  z <- Zest242(eye=details$eye, primaryStartValue=PSV, gridType=details$gridType,outlierValue=7,minInterStimInterval=0,moveProjector = TRUE,retest=details$retest)
-}
+#if (details$gridType == "P-Total") {
+#  z1 <- Zest242(eye=details$eye, primaryStartValue=PSV, gridType="P-Central26",outlierValue=7,minInterStimInterval=0,moveProjector = TRUE,retest=details$retest)
+#  tkdestroy(tt)
+#  graphics.off()
+#  details$fovea <- FALSE
+#  z2 <- Zest242(eye=details$eye, primaryStartValue=PSV, gridType="P-Peripheral",outlierValue=7,minInterStimInterval=0,moveProjector = TRUE,retest=details$retest)
+#  z <- combine(z1,z2)
+#} else {
+#  z <- Zest242(eye=details$eye, primaryStartValue=PSV, gridType=details$gridType,outlierValue=7,minInterStimInterval=0,moveProjector = TRUE,retest=details$retest)
+#}
 
-terminate <- Sys.time()
-tkdestroy(tt)  # closes the pause button upon completion of the test
-opiClose()
-graphics.off()
+#terminate <- Sys.time()
+#tkdestroy(tt)  # closes the pause button upon completion of the test
+#opiClose()
+#graphics.off()
 
-if (gRunning) {
-  windows(900,350)
-  testStatusFinal(z)
-  testComplete()
-}
+#if (gRunning) {
+#  windows(900,350)
+#  testStatusFinal(z)
+#  testComplete()
+#}
 
-if (gRunning) {
-  pdf(file = paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$gridType,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,".pdf"),width=14,height=6)
-  testStatusFinal(z)
-  dev.off()
-  comments <- finalComments()
-  details$comments <- paste(details$comments,comments,sep=" ")
-  writeFile()
-  writeFile2(details)
-  writeFile3(details)
-  px_database(details)
+#if (gRunning) {
+#  pdf(file = paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$gridType,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,".pdf"),width=14,height=6)
+#  testStatusFinal(z)
+#  dev.off()
+#  comments <- finalComments()
+#  details$comments <- paste(details$comments,comments,sep=" ")
+#  writeFile()
+#  writeFile2(details)
+#  writeFile3(details)
+#  px_database(details)
 
-  if (any(details$gridType == c("30-2","30-1","24-2","Peripheral","P-Peripheral","P-Central26"))) {  
+#    if (any(details$gridType == c("30-2","30-1","24-2","Peripheral","P-Peripheral","P-Central26","P-Total"))) {  
     ###################################################################################################
     # Create printout of data using visualFields package
     ###################################################################################################
-    library(visualFields)
+#    library(visualFields)
     ################################################################################
     # load patches to visualFields, as new normative values, locations map, etc here
     ################################################################################
-    load("nvsapmwcps.rda")
-    load("vfsettingsmw.rda")
-    load("saplocmap.RData")
-    load("vfidefault.rda")
-    source("vflayoutmw_singleField.r")
+#    load("nvsapmwcps.rda")
+#    load( "vfsettingsmw.rda" )
+#    source( "vflayoutmw_singleField.r" )
+#    source( "vflayoutmw_singleField2.r" )
 
     #CARE!!! set appropriate normative values
-    setnv( "nvsapmwcps" )
+#    setnv( "nvsapmwcps" )
 
     #load data
-    filename <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$dx,"_",details$gridType,"_Grid_Size_",details$stimSizeRoman,"_vfPackage.csv")
-    loadfile <- read.csv(filename)
-    vf <- loadvfcsv( filename = filename, patternMap = eval(parse(text = paste0("saplocmap$",as.character((tail(loadfile$tpattern,1)))))))
+#    filename <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$dx,"_",details$gridType,"_Grid_Size_",details$stimSizeRoman,"_vfPackage.csv")
+#    loadfile <- read.csv(filename)
+#    vf <- loadvfcsv( filename = filename, patternMap = eval(parse(text = paste0("saplocmap$",as.character((tail(loadfile$tpattern,1)))))))
 
     #generate unique file name for printout
-    fname <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$gridType,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_visualFields.pdf")
-    #save printout
-    vflayoutmw_singleField(vf[nrow(vf),], filename = fname)
-  }
-} else {
-  file.remove(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$grid,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_stimResponses.txt"))
-}
+#    fname <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$gridType,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_visualFields.pdf")
+#    fname2 <- paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$gridType,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_visualFields2.pdf")
 
-opiClose()
-#source('ZEST_big_grid_simulation.r')  # simulation test
+    #save printout
+#    vflayoutmw_singleField(vf[nrow(vf),], filename = fname)
+#    vflayoutmw_singleField2(vf[nrow(vf),], filename = fname2)
+#   }
+#} else {
+#  file.remove(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$grid,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_stimResponses.txt"))
+#}
+
+#opiClose()
+source('ZEST_big_grid_simulation.r')  # simulation test
 #source("censored_PDF_simulation.r")
