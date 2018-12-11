@@ -36,16 +36,22 @@ TT.PTotal <- testPattern(grid.PTotal.coords)
 TT.PTotal[which(is.na(TT.PTotal) == FALSE)] <- 30
 
 TT.PCentral10 <- testPattern(grid.PCentral10.coords)
-TT.PCentral10[which(TT.PCentral10 == 2)] <- 30
+#TT.PCentral10[which(TT.PCentral10 == 2)] <- 30
+TT.PCentral10[which(is.na(TT.PCentral10) == FALSE)] <- 30
 
 TT.PCentral26 <- testPattern(grid.PCentral26.coords)
-TT.PCentral26[which(TT.PCentral26 == 2)] <- 30
+#TT.PCentral26[which(TT.PCentral26 == 2)] <- 30
+TT.PCentral26[which(is.na(TT.PCentral26) == FALSE)] <- 30
+#TT.PCentral26[7027] <- 1
 
 TT.PEdge <- testPattern(grid.PEdge.coords)
 TT.PEdge[which(TT.PEdge == 2)] <- 30
 
 TT.PPeri <- testPattern(grid.PPeri.coords)
-TT.PPeri[which(TT.PPeri == 2)] <- 30
+#TT.PPeri[which(TT.PPeri == 2)] <- 30
+TT.PPeri[which(is.na(TT.PPeri) == FALSE)] <- 30
+TT.PPeri[5493] <- 1
+
 
 tt.practice <- testPattern(grid.practice.coords)
 
