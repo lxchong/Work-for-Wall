@@ -62,6 +62,11 @@ source("grids2.r")
 source("growthPattern2.r")
 source("pauseButton.r")
 source("testStatusOutput.r")
+
+# IMF: added parameters for initialization
+bigWheel = FALSE;
+resp_buzzer = 3;
+
 #########################################################################
 # INPUTS:
 #   eye               - "right" or "left"
@@ -300,7 +305,7 @@ Zest242 <- function(eye="right", primaryStartValue=30, gridType="24-2",
             body(ff) <- substitute(
                 {s <- list(x=x, y=y, level=dbTocd(db,4000/pi),
                         size=as.numeric(details$stimSize),
-                        color="white",
+                        color=.OpiEnv$O900$STIM_WHITE,
                         duration=200, responseWindow=1000)
                  
                  class(s) <- "opiStaticStimulus"
@@ -363,14 +368,14 @@ Zest242 <- function(eye="right", primaryStartValue=30, gridType="24-2",
         }
         return(finalF(state.fovea)[1])   
       }
-      opiSetBackground(fixation=.Octopus900Env$FIX_CROSS,lum=.Octopus900Env$BG_10)
+      opiSetBackground(fixation=.OpiEnv$O900$FIX_CROSS, fixIntensity=30, lum=.OpiEnv$O900$BG_10)
       pauseAtStartFovea() 
       fovealTH <- resFovea()
       fovealTestComplete(fovealTH)
     }
     
     windows(700,250)
-    opiSetBackground(fixation=.Octopus900Env$FIX_CENTRE,lum=.Octopus900Env$BG_10)
+    opiSetBackground(fixation=.OpiEnv$O900$FIX_CENTRE, fixIntensity=30, lum=.OpiEnv$O900$BG_10)
     pauseAtStart()
     commence <<- Sys.time()
     res1 <- procedureWithGrowthPattern(details$startTime,growthPattern, growthNext, onePriors, startF, stepF, stopF, finalF,
@@ -800,7 +805,7 @@ chooseOpi("Octopus900")
 source("query_patient_details.r")
 
     # extra opiInitialize to light up bowl before procedure starts
-opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye="right",gazeFeed=0,bigWheel=TRUE,resp_buzzer = 3)
+opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye="right",bigWheel=bigWheel,resp_buzzer = resp_buzzer, zero_dB_is_10000_asb = FALSE)
 opiClose()
 
 gRunning <- TRUE
@@ -809,7 +814,7 @@ details <- practiceQuery()
 
 while (details$practice == TRUE) {
   gRunning <- TRUE
-  opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,gazeFeed=0,bigWheel=TRUE,resp_buzzer = 3)
+  opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,bigWheel=bigWheel,resp_buzzer = resp_buzzer, zero_dB_is_10000_asb = FALSE)
   Zest242(eye=details$eye, primaryStartValue=30, gridType="practice",outlierValue=15,outlierFreq=1)
   tkdestroy(tt)
   pracTestComplete()
@@ -821,7 +826,7 @@ while (details$practice == TRUE) {
 gRunning <- TRUE # reset gRunning in case practice test was terminated early
 details <- inputs()
 if (dir.exists(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman)) == FALSE) {dir.create(paste0(details$dx,"/",details$gridType," ",details$stimSizeRoman),recursive = TRUE)}
-opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,gazeFeed=0,bigWheel=TRUE, resp_buzzer = 3)
+opiInitialize(eyeSuiteSettingsLocation="C:/ProgramData/Haag-Streit/EyeSuite/",eye=details$eye,bigWheel=bigWheel, resp_buzzer = resp_buzzer, zero_dB_is_10000_asb = FALSE)
 PSV <- setPSV(details$gridType,details$stimSizeRoman)
 
 if (details$gridType == "P-Total") {

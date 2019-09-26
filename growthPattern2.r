@@ -304,7 +304,7 @@ procedureWithGrowthPattern <- function(startTime,gp,gn,starts, startFun, stepFun
             testStatus(result$seen,currentNumPres,currentThresholds,finishedThresholds,finished_counter,gp,fp_counter,fn_counter,stateInfo=states[[rw,cl]],respTime,testGrid = gridPat)
             if (details$gridType != "practice") {
             cat(file=paste(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$grid,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_stimResponses.txt",sep=""),
-                append=TRUE,sprintf("Location: %5s Stim: %2g dB Seen: %5s Resp Time: %5.2f Trial Time: %.0f\n", "FPCatch",cdTodb(FPLevel,4000/pi), result$seen, result$time, difftime(Sys.time(),start_time,units = "secs") * 1000))
+                append=TRUE,sprintf("Location: %5s Stim: %2g dB Seen: %5s Resp Time: %5.2f Trial Time: %.0f Pupil: x=%3g, y=%3g\n", "FPCatch",cdTodb(FPLevel,4000/pi), result$seen, result$time, difftime(Sys.time(),start_time,units = "secs") * 1000, result$pupilX, result$pupilY))
             }
             counter <- counter + 1
             start_time <- Sys.time()  #reset start_time counter for trial time
@@ -321,7 +321,7 @@ procedureWithGrowthPattern <- function(startTime,gp,gn,starts, startFun, stepFun
             testStatus(result$seen,currentNumPres,currentThresholds,finishedThresholds,finished_counter,gp,fp_counter,fn_counter,stateInfo=states[[rw,cl]],respTime, testGrid = gridPat)
             if (details$gridType != "practice") {
               cat(file=paste(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$grid,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_stimResponses.txt",sep=""),
-                append=TRUE,sprintf("Location: %5s Stim: %2g dB Seen: %5s Resp Time: %5.2f\n Trial Time: %.0f\n", "FNCatch",cdTodb(result$stimulus,4000/pi), result$seen, result$time,difftime(Sys.time(),start_time,units = "secs") * 1000))
+                append=TRUE,sprintf("Location: %5s Stim: %2g dB Seen: %5s Resp Time: %5.2f Trial Time: %.0f Pupil: x=%3g, y=%3g\n", "FNCatch",cdTodb(result$stimulus,4000/pi), result$seen, result$time,difftime(Sys.time(),start_time,units = "secs") * 1000, result$pupilX, result$pupilY))
             }
             
           counter <- counter + 1
@@ -366,8 +366,8 @@ procedureWithGrowthPattern <- function(startTime,gp,gn,starts, startFun, stepFun
         testStatus(tail(states[[rw,cl]]$responses,1),currentNumPres,currentThresholds,finishedThresholds,finished_counter,gp,fp_counter,fn_counter,stateInfo=states[[rw,cl]],respTime, testGrid = gridPat)
         if (details$gridType != "practice") {
           cat(file=paste(details$dx,"/",details$gridType," ",details$stimSizeRoman,"/",details$name,"_",details$dx,"_",details$grid,"_",details$stimSizeRoman,"_",details$eye,"Eye_",details$date,"_",details$startTime,"_stimResponses.txt",sep=""),
-          append=TRUE, sprintf("Location: x=%3g, y=%3g Stim: %2g dB Seen: %5s Resp Time: %5.2f Trial Time: %.0f\n", states[[rw,cl]]$x, states[[rw,cl]]$y, 
-            tail(states[[rw,cl]]$stimuli,1), tail(states[[rw,cl]]$responses,1), tail(states[[rw,cl]]$responseTimes,1),difftime(Sys.time(),start_time,units = "secs") * 1000))
+          append=TRUE, sprintf("Location: x=%3g, y=%3g Stim: %2g dB Seen: %5s Resp Time: %5.2f Trial Time: %.0f Pupil: x=%3g, y=%3g\n", states[[rw,cl]]$x, states[[rw,cl]]$y, 
+            tail(states[[rw,cl]]$stimuli,1), tail(states[[rw,cl]]$responses,1), tail(states[[rw,cl]]$responseTimes,1),difftime(Sys.time(),start_time,units = "secs") * 1000, states[[rw,cl]]$opiResp[[1]]$pupilX, states[[rw,cl]]$opiResp[[1]]$pupilY))
         }
         
         if (length(locs) == 1) {
